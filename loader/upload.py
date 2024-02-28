@@ -27,10 +27,9 @@ class PostgresLoader:
                 connection.commit()
 
                 for row in reader:
-                    query = self.define_insert_sql(schema_name, table_name, headers, row)
-                    insert_query = sql.SQL(query)
+                    query = self.define_insert_sql(schema_name, table_name, headers)
 
-                    cursor.execute(insert_query, tuple(row))
+                    cursor.execute(query, tuple(row))
 
                     connection.commit()
 
@@ -40,28 +39,30 @@ class PostgresLoader:
 
     def define_create_table_sql(self, schema_name: str, table_name: str, headers: [Header]):
         column_info = self.define_column_info(headers)
-        create_table_sql = sql.SQL("CREATE TABLE IF NOT EXISTS {}.{} ({})").format(sql.Identifier(schema_name), sql.Identifier(table_name), sql.SQL(column_info))
+        create_table_sql = sql.SQL("CREATE TABLE IF NOT EXISTS {}.{} ({})").format(sql.Identifier(schema_name), sql.Identifier(table_name), column_info)
         return create_table_sql
 
     def define_column_info(self, header_list: [Header]):
-        header_list_string = ', '.join(f"{header.name} {header.datatype}" for header in header_list)
+        header_list_string = []
+        for header in header_list:
+            # string manipulatie van camelcase naar snakecase
+            header_list_string.append(sql.SQL("{} {}").format(sql.Identifier(header.name), sql.SQL(header.datatype)))
+
+        header_list_string = sql.SQL(', ').join(header_list_string)
+
         return header_list_string
 
-    def define_insert_sql(self, schema_name: str, table_name: str, headers: [Header], values: []):
-        header_names = ', '.join(f"{header.name}" for header in headers)
+    def define_insert_sql(self, schema_name: str, table_name: str, headers: [Header]):
+        header_names = []
+        for header in headers:
+            header_names.append(sql.SQL("{}").format(sql.Identifier(header.name)))
 
-        query_head = f"INSERT INTO {schema_name}.{table_name} ({header_names}) "
+        header_names = sql.SQL(', ').join(header_names)
 
-        formatted_values = []
-
-        for i, field in enumerate(values):
-            datatype = headers[i].datatype
-            if datatype == 'TEXT':
-                formatted_values.append(f"'{field}'")
-            else:
-                formatted_values.append(field)
-
-        query_body = f"VALUES ({', '.join(['%s' for _ in formatted_values])});"
+        query_head = sql.SQL("INSERT INTO {}.{} ({})").format(sql.Identifier(schema_name), sql.Identifier(table_name), header_names)
+        query_body = sql.SQL("VALUES ({});").format(
+            sql.SQL(', '.join(['%s'] * len(headers))))
+#         query_body = f"VALUES ({', '.join(['%s'] * len(headers))});"
 
         query = query_head + query_body
         return query
