@@ -23,7 +23,7 @@ class Download:
             # Check if the request was successful (status code 200)
             if response.status_code == 200:
                 # Write the content of the response to a local file
-                with open(file_path, 'wb') as file:
+                with open(file_path, 'wb', encoding='cp1252') as file:
                     file.write(response.content)
                 print(f"Downloaded {filename} successfully.")
                 files.append(file_path)

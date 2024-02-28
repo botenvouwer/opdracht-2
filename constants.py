@@ -23,3 +23,5 @@ DB_PARAMS = {
     'user': 'postgres',
     'password': 'postgres'
 }
+
+schema_name = 'raw'

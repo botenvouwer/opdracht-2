@@ -11,7 +11,7 @@ class CSVReader:
         self.delimiter = self.delimiter_sniffer() or ';'
 
     def __iter__(self):
-        with open(self.file_path, 'r', encoding='utf-8', errors='ignore') as csv_file:
+        with open(self.file_path, 'r', encoding='cp1252', errors='ignore') as csv_file:
             csv_reader = csv.reader(csv_file, delimiter=self.delimiter)
             next(csv_reader)
 
@@ -41,7 +41,7 @@ class CSVReader:
     def delimiter_sniffer(self):
         delimiters = [',', ';', '\t']  # common delimiters to check
 
-        with open(self.file_path, 'r', newline='') as csvfile:
+        with open(self.file_path, 'r', encoding='cp1252', newline='') as csvfile:
             # Read the first few lines to detect the delimiter
             for line in csvfile:
                 for delimiter in delimiters:
@@ -52,7 +52,7 @@ class CSVReader:
         return None
 
     def get_header_info(self) -> [Header]:
-        with open(self.file_path, 'r') as csv_file:
+        with open(self.file_path, 'r', encoding='cp1252') as csv_file:
             csv_reader = csv.reader(csv_file, delimiter=self.delimiter)
             csv_headers = next(csv_reader)
 
@@ -67,7 +67,7 @@ class CSVReader:
             return csv_header_info
 
     def get_header_names(self) -> [Header]:
-        with open(self.file_path, 'r') as csv_file:
+        with open(self.file_path, 'r', encoding='cp1252') as csv_file:
             csv_reader = csv.reader(csv_file, delimiter=self.delimiter)
             csv_headers = next(csv_reader)
             return csv_headers
