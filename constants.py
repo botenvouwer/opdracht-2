@@ -10,6 +10,7 @@ urls = [
 ]
 
 files = [url.split('/')[-1] for url in urls]
+table_names = [x.split('.')[0] for x in files]
 
 directory = '/Users/olivier/PycharmProjects/opdracht-2/raw'
 
