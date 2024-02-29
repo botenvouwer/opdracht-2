@@ -31,17 +31,13 @@ class CSVReader:
     def set_name(self, name: str):
         sanitized_name = re.sub(r'[^a-zA-Z0-9_]', '_', name)
         sanitized_name = re.sub(r'^\d+', '', sanitized_name)
-        # Ensure the name is not empty after sanitization
         if sanitized_name:
             self.__name = sanitized_name.lower()
 
         else:
             raise ValueError("Name cannot be empty after sanitization")
 
-    def camel_to_snake(self, camel_name: str):
-        camel_name_2 = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', camel_name)
-        snake_name = re.sub('([a-z0-9])([A-Z])', r'\1_\2', camel_name_2).lower()
-        return snake_name
+
 
 
     def delimiter_sniffer(self):
@@ -61,9 +57,9 @@ class CSVReader:
         with open(self.file_path, 'r', encoding='cp1252') as csv_file:
             csv_reader = csv.reader(csv_file, delimiter=self.delimiter)
             csv_headers = next(csv_reader)
-
+            snaked_headers = [self.camel_to_snake(value) for value in csv_headers]
             csv_header_info = []
-            for i, csv_header in enumerate(csv_headers):
+            for i, csv_header in enumerate(snaked_headers):
 
                 datatype = 'TEXT'
 
@@ -76,4 +72,10 @@ class CSVReader:
         with open(self.file_path, 'r', encoding='cp1252') as csv_file:
             csv_reader = csv.reader(csv_file, delimiter=self.delimiter)
             csv_headers = next(csv_reader)
-            return csv_headers
+            snaked_headers = [self.camel_to_snake(value) for value in csv_headers]
+            return snaked_headers
+
+    def camel_to_snake(self, camel_name: str):
+        camel_name_2 = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', camel_name)
+        snake_name = re.sub('([a-z0-9])([A-Z])', r'\1_\2', camel_name_2).lower()
+        return snake_name

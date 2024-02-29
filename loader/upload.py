@@ -1,3 +1,4 @@
+import re
 from loader.reader import CSVReader
 from model.entity import Header
 import psycopg2
@@ -62,7 +63,7 @@ class PostgresLoader:
         query_head = sql.SQL("INSERT INTO {}.{} ({})").format(sql.Identifier(schema_name), sql.Identifier(table_name), header_names)
         query_body = sql.SQL("VALUES ({});").format(
             sql.SQL(', '.join(['%s'] * len(headers))))
-#         query_body = f"VALUES ({', '.join(['%s'] * len(headers))});"
 
         query = query_head + query_body
         return query
+
