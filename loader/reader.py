@@ -38,6 +38,12 @@ class CSVReader:
         else:
             raise ValueError("Name cannot be empty after sanitization")
 
+    def camel_to_snake(self, camel_name: str):
+        camel_name_2 = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', camel_name)
+        snake_name = re.sub('([a-z0-9])([A-Z])', r'\1_\2', camel_name_2).lower()
+        return snake_name
+
+
     def delimiter_sniffer(self):
         delimiters = [',', ';', '\t']  # common delimiters to check
 
