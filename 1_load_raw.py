@@ -5,8 +5,8 @@ from loader.upload import PostgresLoader
 from loader.download import Download
 
 # # Stap 1 download de files (via loader.download.py)
-# dlf = Download()
-# dlf.download_files()
+dlf = Download()
+dlf.download_files()
 
 # Stap 2 upload de files naar het raw schema van de database (via loader.upload.py)
 ulf = PostgresLoader(DB_PARAMS)

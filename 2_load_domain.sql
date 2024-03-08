@@ -19,7 +19,7 @@ FROM raw.customers;
 
 -- ORDERS: Opgesplitste orders tabel 1: orders
 CREATE TABLE IF NOT EXISTS domain.orders(
-    sales_order_id INT,
+    sales_order_id INT PRIMARY KEY,
     order_date TIMESTAMP,
     due_date TIMESTAMP,
     ship_date TIMESTAMP,
@@ -48,7 +48,7 @@ FROM
 
 -- ORDERS: Opgesplitste orders tabel 2: order_details
 CREATE TABLE IF NOT EXISTS domain.order_details (
-    sales_order_detail_id INT,
+    sales_order_detail_id INT PRIMARY KEY,
     sales_order_id INT,
     product_id INT,
     order_qty INT,
@@ -72,7 +72,7 @@ FROM
 -- Tabel productcategories van raw naar domain
 
 CREATE TABLE IF NOT EXISTS domain.productcategories (
-    category_id INT,
+    category_id INT PRIMARY KEY,
     category_name TEXT
 );
 
@@ -85,7 +85,7 @@ FROM
 
 -- Table products from raw to domain
 CREATE TABLE IF NOT EXISTS domain.products (
-    product_id INT,
+    product_id INT PRIMARY KEY,
     product_number TEXT,
     product_name TEXT,
     model_name TEXT,
@@ -110,7 +110,7 @@ FROM raw.products;
 -- Tabel productsubcategories van raw naar domain
 
 CREATE TABLE IF NOT EXISTS domain.productsubcategories (
-    sub_category_id INT,
+    sub_category_id INT PRIMARY KEY,
     category_id INT,
     sub_category_name TEXT
 );
@@ -138,7 +138,7 @@ FROM raw.vendorproduct;
 -- Table vendors from raw to domain
 
 CREATE TABLE IF NOT EXISTS domain.vendors(
-    vendor_id INT,
+    vendor_id INT PRIMARY KEY,
     vendor_name TEXT,
     account_number TEXT,
     credit_rating INT,
@@ -169,7 +169,7 @@ SET "group" = NULL WHERE "group" = 'NULL';
 -- tabel Employees van raw naar domain
 
 CREATE TABLE IF NOT EXISTS domain.employees(
-    employee_id INT,
+    employee_id INT PRIMARY KEY,
     manager_id INT,
     first_name TEXT,
     last_name TEXT,
@@ -181,7 +181,7 @@ CREATE TABLE IF NOT EXISTS domain.employees(
     territory TEXT,
     country CHAR(2),
     "group" TEXT
-)
+);
 
 INSERT INTO domain.employees(employee_id, manager_id, first_name, last_name, full_name, job_title, organization_level, marital_status, gender, territory, country, "group")
 SELECT
