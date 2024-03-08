@@ -1,9 +1,9 @@
-import re
 from loader.reader import CSVReader
 from model.entity import Header
 import psycopg2
 from psycopg2 import sql
 from constants import DB_PARAMS, schema_name
+import re
 
 
 class PostgresLoader:
@@ -39,6 +39,8 @@ class PostgresLoader:
         return drop_if_exists_sql
 
     def define_create_table_sql(self, schema_name: str, table_name: str, headers: [Header]):
+        for header in headers:
+            header.name = self.camel_to_snake(header.name)
         column_info = self.define_column_info(headers)
         create_table_sql = sql.SQL("CREATE TABLE IF NOT EXISTS {}.{} ({})").format(sql.Identifier(schema_name), sql.Identifier(table_name), column_info)
         return create_table_sql
@@ -46,8 +48,8 @@ class PostgresLoader:
     def define_column_info(self, header_list: [Header]):
         header_list_string = []
         for header in header_list:
-            # string manipulatie van camelcase naar snakecase
-            header_list_string.append(sql.SQL("{} {}").format(sql.Identifier(header.name), sql.SQL(header.datatype)))
+            snake_case_name = self.camel_to_snake(header.name)
+            header_list_string.append(sql.SQL("{} {}").format(sql.Identifier(snake_case_name), sql.SQL(header.datatype)))
 
         header_list_string = sql.SQL(', ').join(header_list_string)
 
@@ -56,7 +58,8 @@ class PostgresLoader:
     def define_insert_sql(self, schema_name: str, table_name: str, headers: [Header]):
         header_names = []
         for header in headers:
-            header_names.append(sql.SQL("{}").format(sql.Identifier(header.name)))
+            snake_case_name = self.camel_to_snake(header.name)
+            header_names.append(sql.SQL("{}").format(sql.Identifier(snake_case_name)))
 
         header_names = sql.SQL(', ').join(header_names)
 
@@ -67,3 +70,7 @@ class PostgresLoader:
         query = query_head + query_body
         return query
 
+    def camel_to_snake(self, camel_name: str):
+        camel_name_2 = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', camel_name)
+        snake_name = re.sub('([a-z0-9])([A-Z])', r'\1_\2', camel_name_2).lower()
+        return snake_name

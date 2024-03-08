@@ -12,11 +12,10 @@ urls = [
 files = [url.split('/')[-1] for url in urls]
 table_names = [x.split('.')[0] for x in files]
 
+# Directory where you want to download your files to and where they will be accessed when uploading
 directory = '/Users/olivier/PycharmProjects/opdracht-2/raw'
 
-# even tijdelijk
-file_path = '/Users/olivier/PycharmProjects/opdracht-2/raw/customers.csv'
-
+# Database parameters
 DB_PARAMS = {
     'host': 'localhost',
     'port': '5432',
@@ -25,4 +24,5 @@ DB_PARAMS = {
     'password': 'postgres'
 }
 
+# Schema name for where you want to upload your files in the database
 schema_name = 'raw'

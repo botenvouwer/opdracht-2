@@ -1,6 +1,6 @@
 import os
 import requests
-from constants import directory
+from constants import directory, urls
 
 
 class Download:
@@ -8,9 +8,9 @@ class Download:
         self.directory = directory
         os.makedirs(self.directory, exist_ok=True)
 
-    def download_files(self, file_list):
+    def download_files(self):
         files = []
-        for url in file_list:
+        for url in urls:
             # Extract the filename from the URL
             filename = url.split('/')[-1]
 
@@ -23,7 +23,7 @@ class Download:
             # Check if the request was successful (status code 200)
             if response.status_code == 200:
                 # Write the content of the response to a local file
-                with open(file_path, 'wb', encoding='cp1252') as file:
+                with open(file_path, 'wb') as file:
                     file.write(response.content)
                 print(f"Downloaded {filename} successfully.")
                 files.append(file_path)

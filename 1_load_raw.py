@@ -2,20 +2,19 @@ import os
 from constants import DB_PARAMS, directory
 from loader.reader import CSVReader
 from loader.upload import PostgresLoader
+from loader.download import Download
 
-# raw_files = os.listdir(directory)
-#
-# for filename in raw_files:
-#     if filename.endswith('.csv'):
-#         csv_path = os.path.join(directory, filename)
-#         csv_reader = CSVReader(csv_path)
-#         loader = PostgresLoader(DB_PARAMS)
-#         loader.load(csv_reader)
-#
-#         from constants import DB_PARAMS
-#         from loader.reader import CSVReader
-#         from loader.upload import PostgresLoader
+# # Stap 1 download de files (via loader.download.py)
+# dlf = Download()
+# dlf.download_files()
 
-csv_4 = CSVReader('/Users/olivier/PycharmProjects/opdracht-2/raw/employees.csv')
-loader = PostgresLoader(DB_PARAMS)
-loader.load(csv_4)
+# Stap 2 upload de files naar het raw schema van de database (via loader.upload.py)
+ulf = PostgresLoader(DB_PARAMS)
+
+for filename in os.listdir(directory):
+    if filename.endswith(".csv"):
+        print(f"Loading {filename}")
+        filepath = os.path.join(directory, filename)
+        csv = CSVReader(filepath)
+        ulf.load(csv)
+        print(f"Succesfully loaded {filename}")
