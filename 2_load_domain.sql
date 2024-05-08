@@ -2,6 +2,15 @@
 -- Schrijf de queries die we nodig hebben op een domeinmodel op te bouwen
 -- Je kunt een table vullen vanuit een query -> zie https://learnsql.com/cookbook/how-to-create-one-table-from-another-table-in-sql/
 
+DO $$ DECLARE
+    r RECORD;
+BEGIN
+    -- Drop all tables in the 'domain' schema
+    FOR r IN (SELECT tablename FROM pg_tables WHERE schemaname = 'domain') LOOP
+        EXECUTE 'DROP TABLE IF EXISTS domain.' || quote_ident(r.tablename) || ' CASCADE';
+    END LOOP;
+END $$;
+
 -- Tabel customers van raw naar domain
 CREATE TABLE IF NOT EXISTS domain.customers(
     customer_id INT PRIMARY KEY,

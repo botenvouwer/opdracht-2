@@ -10,6 +10,16 @@
 
 -- views en tabellen net voordat ze in Matplotlib gaan
 
+DO $$ DECLARE
+    r RECORD;
+BEGIN
+    -- Drop all views in the 'models' schema
+    FOR r IN (SELECT viewname FROM pg_views WHERE schemaname = 'models') LOOP
+        EXECUTE 'DROP VIEW IF EXISTS models.' || quote_ident(r.viewname) || ' CASCADE';
+    END LOOP;
+END $$;
+
+
 -- Top 3 products based on order_qty in month 7
 DROP VIEW IF EXISTS models.top_selling_products;
 CREATE VIEW models.top_selling_products AS

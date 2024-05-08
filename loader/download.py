@@ -1,16 +1,22 @@
 import os
 import requests
-from constants import directory, urls
 
 
 class Download:
-    def __init__(self):
+    def __init__(self, urls, directory):
         self.directory = directory
+        self.urls = urls
         os.makedirs(self.directory, exist_ok=True)
 
     def download_files(self):
         files = []
-        for url in urls:
+
+        for file_name in os.listdir(self.directory):
+            file_path = os.path.join(self.directory, file_name)
+            os.remove(file_path)
+            print(f"Deleted {file_name}")
+
+        for url in self.urls:
             # Extract the filename from the URL
             filename = url.split('/')[-1]
 
@@ -25,10 +31,10 @@ class Download:
                 # Write the content of the response to a local file
                 with open(file_path, 'wb') as file:
                     file.write(response.content)
-                print(f"Downloaded {filename} successfully.")
+                print(f"Successfully downloaded {filename}.")
                 files.append(file_path)
             else:
-                print(f"Failed to download {filename}.")
+                raise Exception(f"Kan bestand {filename} niet downloaden {response.status_code} {response.content}")
 
         print("All files downloaded.")
         return files

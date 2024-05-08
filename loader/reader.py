@@ -38,16 +38,13 @@ class CSVReader:
             raise ValueError("Name cannot be empty after sanitization")
 
     def delimiter_sniffer(self):
-        delimiters = [',', ';', '\t']  # common delimiters to check
+        delimiters = [',', ';', '\t']
 
         with open(self.file_path, 'r', encoding='cp1252', newline='') as csvfile:
-            # Read the first few lines to detect the delimiter
             for line in csvfile:
                 for delimiter in delimiters:
                     if delimiter in line:
                         return delimiter
-
-        # If none of the common delimiters are found, return None
         return None
 
     def get_header_info(self) -> [Header]:
